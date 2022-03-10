@@ -1,4 +1,3 @@
-
 class Contato {
   int id;
   String nome;
@@ -7,7 +6,7 @@ class Contato {
 
   Contato(this.id, this.nome, this.email, this.imagem);
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'id': id,
       'nome': nome,
@@ -17,15 +16,14 @@ class Contato {
     return map;
   }
 
-  Contato.fromMap(Map<String,dynamic>map){
+  Contato.fromMap(Map<String, dynamic> map) {
     id = map['id'];
-    nome = map[ 'nome'];
-    email = map['email']; 
+    nome = map['nome'];
+    email = map['email'];
     imagem = map['imagem'];
   }
 
-  
- @override
+  @override
   String toString() {
     return "Contato => (id: $id, nome: $nome, email: $email, imagem: $imagem)";
   }

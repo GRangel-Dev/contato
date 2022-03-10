@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'dart:ffi';
+
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
@@ -30,22 +31,26 @@ class DatabaseHelper {
     return _database!;
   }
 
-  Future<Database> initializeDatabase() async{
+  Future<Database> initializeDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'contatos.db';
-    var contatosDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
+    var contatosDatabase =
+        await openDatabase(path, version: 1, onCreate: _createDb);
     return contatosDatabase;
   }
 
-  void _createDb(Database db, int newVersion) async{
-    await db.execute('CREATE TABLE $contatoTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNome TEXT, ''$colEmail TEXT, '', $colImagem TEXT)');
+  void _createDb(Database db, int newVersion) async {
+    await db.execute(
+        'CREATE TABLE $contatoTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNome TEXT, '
+        '$colEmail TEXT, '
+        ', $colImagem TEXT)');
   }
 
   // CRUD com Helper SQL
 
-  // inserir 
+  // inserir
 
-  Future<int> inserirContato( Contato contato) async{
+  Future<int> inserirContato(Contato contato) async {
     Database db = await this.database;
     var resultado = await db.insert(contatoTable, contato.toMap());
     return resultado;
@@ -53,50 +58,57 @@ class DatabaseHelper {
 
   //retornar um contato pelo Id
 
-  Future<Contato?> getContato(int id) async{
+  Future<Contato?> getContato(int id) async {
     List<Map> maps = await db.query(contatoTable,
-    columns:[colId, colNome, colEmail, colImagem],
-    where:"$colId = ?",
-    whereArgs: [id] );
-    if(maps.length > 0 ){
+        columns: [colId, colNome, colEmail, colImagem],
+        where: "$colId = ?",
+        whereArgs: [id]);
+    if (maps.length > 0) {
       return Contato.fromMap(maps.first);
-    }else{
+    } else {
       return null;
     }
   }
 
+  // retorma a lista de constatos
+  Future<List<Contato>> getContatos() async {
+    Database db = await this.database;
+    var resultado = await db.query(contatoTable);
+    List<Contato> lista = resultado.isNotEmpty
+        ? resultado.map((e) => Contato.fromMap(e)).toList()
+        : [];
+    return lista;
+  }
+
   // atualizar contato
- Future<int> upDateContato(Contato contato) async{
-   var db = await this.database;
-    var resultado =
-    await db.update(contatoTable, contato.toMap(),
-    where: "$colId = ?",
-    whereArgs: [contato.id]);
+  Future<int> upDateContato(Contato contato) async {
+    var db = await this.database;
+    var resultado = await db.update(contatoTable, contato.toMap(),
+        where: "$colId = ?", whereArgs: [contato.id]);
     return resultado;
   }
 
   // deletar contato
-  Future<int> deleteContato(int id) async{
+  Future<int> deleteContato(int id) async {
     var db = await this.database;
-    int resultado = await db.delete(contatoTable, 
-    where: "$colId = ?",
-    whereArgs: [id]);
+    int resultado =
+        await db.delete(contatoTable, where: "$colId = ?", whereArgs: [id]);
     return resultado;
-
   }
 
   // obter o número de contatos no banco de dados
 
-  Future<int> getCount() async{
+  Future<int> getCount() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $contatoTable');
+    List<Map<String, dynamic>> x =
+        await db.rawQuery('SELECT COUNT (*) from $contatoTable');
     int? resultado = Sqflite.firstIntValue(x);
     return resultado!;
   }
 
-    // fechar o banco de dados
-    Future close() async{
-      Database db = await this.database;
-      db.close();
-    }
+  // fechar o banco de dados
+  Future close() async {
+    Database db = await this.database;
+    db.close();
+  }
 }
