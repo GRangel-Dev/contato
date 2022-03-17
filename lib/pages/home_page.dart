@@ -57,12 +57,14 @@ class HomePage extends StatefulWidget {
         child: Row(
           children: [
             Container(
-              width: 70,
-              height: 70,
+              width: 70.0,
+              height: 70.0,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                 image: FileImage(File(contatos[index].imagem)) : AssetImage("assets/images/pessoa2.png")
+                 image: contatos[index].imagem != null ? 
+                 FileImage(File(contatos[index].imagem)) :
+                  AssetImage("assets/images/pessoa2.png")
                ),
               ),
             ),

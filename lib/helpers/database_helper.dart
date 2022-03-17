@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
@@ -59,6 +58,8 @@ class DatabaseHelper {
   //retornar um contato pelo Id
 
   Future<Contato?> getContato(int id) async {
+        Database db = await this.database;
+
     List<Map> maps = await db.query(contatoTable,
         columns: [colId, colNome, colEmail, colImagem],
         where: "$colId = ?",

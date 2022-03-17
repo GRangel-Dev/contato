@@ -25,6 +25,6 @@ class Contato {
 
   @override
   String toString() {
-    return "Contato => (id: $id, nome: $nome, email: $email, imagem: $imagem)";
+    return 'Contato => (id: $id, nome: $nome, email: $email, imagem: $imagem)';
   }
 }
